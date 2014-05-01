@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width, minimal-ui">
+		<link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+		<title>Velocity.js: Playground</title>
+		<style>
+			/**************
+			    Global
+			**************/
+
+			* {
+				padding: 0;
+				margin: 0;
+
+				cursor: default;
+				pointer-events: none;
+			}
+
+			body {
+				background: #060d19;
+				overflow: hidden;
+
+				font-family: "Helvetica Neue", Helvetica;
+				font-weight: 100;
+			}
+
+			#start {
+				position: fixed;
+
+				top: 45%;
+				left: 50%;
+
+				background: none;
+				border: none;
+
+				color: rgba(49, 147, 188, 0.80);
+				font-family: "Orbitron";
+				font-size: 0.6875rem;
+				text-transform: uppercase;
+
+				-webkit-transform: translateX(-50%) translateY(-50%);
+				-moz-transform: translateX(-50%) translateY(-50%);
+				transform: translateX(-50%) translateY(-50%);
+			}
+
+			#start:hover {
+				color: rgba(49, 147, 188, 1);
+			}
+
+			#start:active {
+				color: rgba(49, 147, 188, 0.75);
+			}
+
+			a, input {
+				cursor: pointer;
+				pointer-events: auto;
+			}
+
+			a:focus, input:focus {
+				outline: none;
+			}
+
+	        /***************
+			    Buzzing
+			***************/
+
+			/* Buzzing technique copyright Chris Rickels: http://codepen.io/cRckls/pen/tvbgG */
+
+			#buzzingContainer {
+				display: none;
+
+				position: fixed;
+	            left: 50%;
+	            top: 42.5%;
+
+	            width: 40em;
+
+	            -webkit-transform: translateX(-50%) translateY(-50%);
+	            -moz-transform: translateX(-50%) translateY(-50%);
+	            transform: translateX(-50%) translateY(-50%);
+
+	            letter-spacing: 0.135em;
+				word-spacing: -0.05em;
+			}
+
+			#buzzingContainerText span {
+				-webkit-filter: blur(1px);
+
+				position: absolute;
+
+				font-size: 3em;
+				font-family: "Orbitron", fixed;
+			}
+
+			#buzzingContainerText span b {
+		    	display: inline-block;
+
+		    	color: #ff2c82;
+			}
+
+			#buzzingContainerText span:nth-child(1) {
+				margin-left: -2px;
+				color: red;
+			}
+
+			#buzzingContainerText span:nth-child(2) {
+				-webkit-filter: blur(2px);
+
+				margin-left: 2px;
+
+				color: green;
+			}
+
+			#buzzingContainerText span:nth-child(3) {
+				position: 20px 0;
+
+				color: blue;
+			}
+
+			#buzzingContainerText span:nth-child(4) {
+				color: #56dbed;
+			}
+
+			#buzzingContainerText span:nth-child(5) {
+				-webkit-filter: blur(18px);
+
+				color: #439abc;
+			}
+
+			.buzzingScanline {
+				z-index: 2;
+
+				position: relative;
+
+				height: 0.25em;
+				margin-bottom: 0.1em;
+
+				background: #000000;
+				opacity: 0.075;
+			}
+
+			/***************
+			    Fakebar
+			***************/
+
+			#fakebar {
+				position: fixed;
+				top: -3em;
+				left: 0;
+
+				width: 100%;
+				padding: 0.45em 1.25em 0.4em 1.25em;
+
+				background: #e7e7e7;
+				background: linear-gradient(to bottom, #e9e9e9, #d9d9d9);
+				border-bottom: 1px solid #525252;
+				box-shadow: inset 0px 0px 1px 0px white;
+
+				color: #000;
+				font-family: "Lucida Grande";
+				line-height: 2em;
+				font-size: 12px;
+				letter-spacing: -0.0175em;
+				word-spacing: 0.0175em;
+			}
+
+			#fakebar a {
+				margin-left: 0.75em;
+
+				color: blue;
+				text-decoration: underline;
+			}
+
+			#fakebar #fakebarButtons {
+				float: right;
+
+				margin-right: 2.175em;
+			}
+
+			#fakebar #fakebarButtons input {
+				margin-left: 0.315em;
+
+				padding: 0.225em 0.75em 0.285em 0.75em;
+
+				background: #ededed;
+				background: linear-gradient(to bottom, #f0f0f0, #cfcfcf);
+				border: 1px solid #7a7f83;
+				border-radius: 4px;
+
+				color: #131313;
+			}
+
+			#fakebar #fakebarButtons span {
+				margin-left: 0.45em;
+
+				color: #6e7175;
+			}
+
+			/*************
+			    Cubes
+			*************/
+
+			/* Cube design technique copyright Keith Clark: http://blog.keithclark.co.uk/wp-content/uploads/2013/10/demos/4/ */ 
+
+	        #cubeContainer {
+	        	-webkit-perspective: 1000px;
+	            -moz-perspective: 1000px;
+	            -ms-perspective: 1000px;
+	            perspective: 1000px;
+
+	            -webkit-transform-style: preserve-3d;
+	            -moz-transform-style: preserve-3d;
+	            transform-style: preserve-3d;
+
+				z-index: -1;
+
+	            position: absolute;
+	            top: 0; left: 0; right: 0; bottom: 0;
+	        }
+
+	        .cube, .face {
+				-webkit-transform-style: preserve-3d;
+	            -moz-transform-style: preserve-3d;
+	            transform-style: preserve-3d;
+
+	            position: absolute;
+	            top: 50%;
+	            left: 50%;
+
+				background: #040a14;
+	        }
+
+	        .cube {
+	            -webkit-transform: translateZ(1100px);
+	        }
+	  
+	        .cube .face {
+	            width: 14em;
+	            height: 14em;
+	            margin: -7em;
+	        }
+
+	        .cube .face:nth-child(1) {
+	            -webkit-transform: translateZ(7em);
+	            -moz-transform: translateZ(7em);
+	            transform: translateZ(7em);
+	        }
+	        .cube .face:nth-child(2) {
+	            -webkit-transform: translateZ(-7em) rotateY(180deg);
+	            -moz-transform: translateZ(-7em) rotateY(180deg);
+	            transform: translateZ(-7em) rotateY(180deg);
+	        }
+	        .cube .face:nth-child(3) {
+	            -webkit-transform: translateX(-7em) rotateY(-90deg);
+	            -moz-transform: translateX(-7em) rotateY(-90deg);
+	            transform: translateX(-7em) rotateY(-90deg);
+	        }
+	        .cube .face:nth-child(4) {
+	            -webkit-transform: translateX(7em) rotateY(90deg);
+	            -moz-transform: translateX(7em) rotateY(90deg);
+	            transform: translateX(7em) rotateY(90deg);
+	        }
+	        .cube .face:nth-child(5) {
+	            -webkit-transform: translateY(7em) rotateX(-90deg);
+	            -moz-transform: translateY(7em) rotateX(-90deg);
+	            transform: translateY(7em) rotateX(-90deg);
+	        }
+	        .cube .face:nth-child(6) {
+	            -webkit-transform: translateY(-7em) rotateX(90deg);
+	            -moz-transform: translateY(-7em) rotateX(90deg);
+	            transform: translateY(-7em) rotateX(90deg);
+	        }
+
+	        #smallCube {
+				-webkit-transform-origin: 50% 50% -350px;
+
+	        	margin-top: -10em;
+
+	        	font-size: 3px;
+	        }
+
+	        #smallCube .face {
+	        	background: #ff60a0;
+	        }
+
+			/***************
+			    Welcome
+			***************/
+
+			#welcome {
+				display: none;
+
+				position: absolute;
+	            top: 40%; right: 0; left: 0;
+
+				color: rgba(6, 13, 25, 0);
+				font-size: 0.6875rem;
+				font-family: "Orbitron";
+				text-transform: uppercase;
+				text-align: center;
+				letter-spacing: 0.15em;
+			}
+
+			#welcome ul li {
+				list-style-type: none;
+
+				margin-bottom: 0.75em;
+			}
+
+			#welcome a {
+				text-decoration: none; /* Problems with link clicking... */
+				color: #54c4ef;
+			}
+
+			#welcome .blast {
+				opacity: 0;
+			}
+
+			/*************
+			     Logo
+			*************/
+
+			#logo {
+				position: fixed;
+				right: 0.75em;
+				bottom: 0.65em;
+
+				opacity: 0;
+
+				text-decoration: none;
+				color: #d6d6d6;
+				font-size: 2rem;
+				letter-spacing: 0.025em;
+			}
+
+			#logoDot {
+				color: #d74580;
+			}
+		</style>
+	</head>
+	<body>
+		<input id="start" type="button" value="Turn Volume Up" />
+		<div id="buzzingContainer">
+			<div id="buzzingContainerText">
+				<span>Think outside the <b>_</b>.</span>
+				<span>Think outside the <b>_</b>.</span>
+				<span>Think outside the <b>_</b>.</span>
+				<span>Think outside the <b>_</b>.</span>
+				<span>Think outside the <b>_</b>.</span>
+			</div>
+			<div class="buzzingScanline"></div>
+			<div class="buzzingScanline"></div>
+			<div class="buzzingScanline"></div>
+			<div class="buzzingScanline"></div>
+			<div class="buzzingScanline"></div>
+			<div class="buzzingScanline"></div>
+			<div class="buzzingScanline"></div>
+			<div class="buzzingScanline"></div>
+			<div class="buzzingScanline"></div>
+			<div class="buzzingScanline"></div>
+		</div>
+		<div id="fakebar">
+	    	http://julian.com/research/velocity/playground.html/ wants to use your microphone.
+	    	<a>Learn more</a>
+	    	<div id="fakebarButtons">
+	    		<input type="button" value="Deny" />
+	    		<input type="button" value="Allow" />
+	    		<span>x</span>
+	    	</div>
+	    </div>
+		<div id="cubeContainer">
+			<div id="smallCube" class="cube">
+				<div class="face"></div>
+	            <div class="face"></div>
+	            <div class="face"></div>
+	            <div class="face"></div>
+	            <div class="face"></div>
+	            <div class="face"></div>
+			</div>
+	        <div id="largeCube" class="cube">
+	            <div class="face"></div>
+	            <div class="face"></div>
+	            <div class="face"></div>
+	            <div class="face"></div>
+	            <div class="face"></div>
+	            <div class="face"></div>
+	        </div>
+	    </div>
+	    <div id="welcome">
+	    	<ul>
+	    		<li>
+	    			Welcome to the playground
+	    		</li>
+	    		<li>
+	    			<i>Coming soon to a screen near you</i>
+	    		</li>
+	    		<li>
+	    			<br />
+	    			This teaser was created with Velocity
+	    			<br />
+	    		<li>
+	    			<br />
+	    		</li>
+	    		</li>
+	    		<li>
+	    			Upcoming demoers:
+	    		</li>
+	    		<li>
+	    			@thrivingkings @zachsaucier
+	    		</li>
+	    		<li>
+	    			@snorpey @350d
+	    		</li>
+	    		<li>
+	    			<a href="mailto:julian@julianshapiro.com?subject=Velocity%20Demo%20Submission" target="_blank" />You?</a>
+	    		</li>
+	    	</ul>
+	    </div>
+		<a id="logo" href="index.html">Velocity<span id="logoDot">.</span>js</a>
+	    <audio id="audio" preload="none"></audio>
+		<script src="http://julian.com/research/js/libs/jquery-1.11.0.js"></script>
+		<script src="http://julian.com/research/blast/jquery.blast.js" id="library"></script>
+		<script src="velocity.js" id="library"></script>
+		<script>
+	    /****************
+		    Elements
+		****************/
+
+		var $body = $("body");
+
+		var $start = $("#start"),
+			$audio = $("#audio");
+
+	    var $buzzingContainer = $("#buzzingContainer"),
+	    	$buzzingContainerText = $("#buzzingContainerText"),
+	    	$buzzingContainerTextSpan = $("#buzzingContainerText span"),
+	    	$buzzingContainerTextB = $("#buzzingContainerText b");
+
+	    var $fakebar = $("#fakebar");
+
+	    var $cubeContainer = $("#cubeContainer"),
+	    	$largeCube = $("#largeCube"),
+	    	$largeCubeFace = $("#largeCube .face"),
+	    	$smallCube = $("#smallCube"),
+	    	$smallCubeFace = $("#smallCube .face");
+
+	    var $logo = $("#logo"),
+	    	$welcome = $("#welcome"),
+	    	$welcomeBlasted = $welcome.blast({ delimiter: "letter" });
+
+	    /***************
+    	    Effects
+    	***************/
+
+	    function glitch ($element, delay) {
+	    	$element
+				.velocity({ opacity: 0.5, marginLeft: -100, scaleX: 1.2, skewX: 80 }, { delay: delay, duration: 25 })
+				.velocity("reverse")
+				.velocity({ opacity: 0.25, marginRight: -80, scaleX: 1.2, skewX: 80 }, 25)
+				.velocity("reverse")
+	    }
+
+	    /***************
+		    Buzzing
+		***************/
+
+		function buzzing () {
+
+			$buzzingContainer
+				.velocity({ opacity: 1 }, { display: "block", duration: 175 })
+				.velocity({ marginTop: "-=0.65em" }, { delay: 50, loop: 2, duration: 850, easing: "linear" });
+
+			/************************
+			   Phasing & Glitching
+			************************/
+
+			function phase (item, delay) {
+		    	$buzzingContainerTextSpan.eq(item)
+		    		.velocity({ marginLeft: 4 }, { delay: delay, duration: 60 })
+		    		.velocity({ marginLeft: -4 }, 60)
+		    		.velocity({ marginLeft: 2 }, 60)
+		    }
+
+		    phase(0, 500);
+		    phase(1, 1000);
+		    phase(2, 1500);
+
+			glitch($buzzingContainerText, 0);
+	    	glitch($buzzingContainerText, 1250);
+	    	glitch($buzzingContainerText, 1850);
+
+	    	/**********************
+			    Symbol Cycling
+			**********************/
+
+		    $buzzingContainerTextB.delay(730);
+
+		    $.each([ "?", "&#8907;", "&#8756;", "&#9649;", "&#9651;", "&#9633;", "box" ], function(i, html) {
+		    	$buzzingContainerTextB
+					.velocity({ 
+						opacity: 0,
+						colorGreen: "50%",
+						colorBlue: "50%",
+						scaleX: 1.35,
+						scaleY: 1.35
+					}, 65, function() { $buzzingContainerTextB.html(html); })
+					.velocity("reverse")
+		    });
+
+		    $buzzingContainerTextB
+		    	.velocity({ scaleX: 1.5, scaleY: 1.5 }, 125, "spring")
+				.velocity("reverse")
+		    	.velocity({ colorRed: "-=50" }, { delay: 150, duration: 3000 });
+		}
+
+		/***************
+		    Fakebar
+		***************/
+
+		function fakeBar () {
+			$fakebar
+				.velocity({ top: 0 }, 150, "linear")
+				.velocity({
+					opacity: 0.15,
+					translateY: 75,
+					scaleX: 0
+				}, { delay: 1750, duration: 150, easing: "easeInOutQuad", display: "none" });
+		}
+
+		/*************
+		    Cubes
+		*************/
+
+		function cubes () {
+			$buzzingContainer.velocity({ opacity: 0, translateZ: -250 }, { display: "none", duration: 100 });
+
+			$cubeContainer.velocity({ translateY: "-=0.75em", }, { delay: 50, loop: 2, duration: 1000, easing: "linear" });
+
+			$smallCube
+				.delay(350)
+				.velocity({ rotateY: [ -180, 180 ] }, { duration: 1800, easing: "easeOutSine", display: "none" });
+
+			var dotSize = 1;
+			$largeCubeFace.eq(0).css({
+			    "background-image": "-webkit-radial-gradient(#3f90cf " + (25 * (1 + dotSize/10)) + "%, transparent " + (25 * (1 + dotSize/10)) + "%)",
+			    "background-size": (dotSize * 4) + "px " + (dotSize * 4) + "px",
+			    "background-position": -(dotSize * 0.5) + " " + -dotSize
+			});
+
+			$largeCubeFace
+				.velocity({ backgroundColorRed: 49, backgroundColorGreen: 147, backgroundColorBlue: 188 }, 450, "swing")
+				.velocity({ backgroundColorGreen: "+=50" }, { duration: 1000, loop: 3, easing: "easeInOutQuad" });
+
+		    $largeCube
+				.velocity({ translateZ: [ -250, 1100 ] }, 350, "easeOutSine")
+				.velocity({ rotateY: 400 }, { duration: 5250, easing: "spring" })
+				.velocity({ fontSize: 8 }, { delay: 3250, duration: 600, easing: "spring" })
+				.velocity({ fontSize: 3.5 }, { delay: 150, duration: 500, easing: "spring" })
+				.velocity({ fontSize: 1 }, { delay: 200, duration: 150, easing: "spring" })
+				.velocity({ 
+					fontSize: 16,
+					translateY: 0,
+					translateZ: 1100,
+					rotateY: 2,
+					rotateZ: 90,
+					opacity: 0
+				}, { duration: 375, easing: "easeOutSine", display: "none" })
+				.queue(function() {
+					setTimeout(welcome, 1000);
+				})
+				.dequeue();
+	    }
+
+        /***************
+    	    Welcome
+    	***************/
+
+	    function welcome () {
+		    $welcome.show();
+		    glitch($welcome, 1150);
+		    $welcome.velocity({ translateY: [ "-3.25em", 0 ] }, { delay: 25, loop: 10, duration: 1750, easing: "linear" });
+
+		 	$.each($welcomeBlasted, function(i) {
+		    	function getColor() { return Math.max(Math.floor(Math.random() * 255), 155); }
+
+		    	$.velocity.animate(this, { opacity: [ 1, 0 ] }, { duration: 400, delay: (i + 9) * 20, easing: "swing" });
+
+		    	$.velocity.animate(this, {
+		    		colorRed: [ 0, getColor() - 50 ],
+		    		colorGreen: [ getColor, getColor() - 25 ],
+		    		colorBlue: [ getColor, getColor() + 75 ],
+		    		colorAlpha: [ Math.random() + 0.5, 0.5 ],
+		    		textShadowBlur: [ 4, 0 ]
+		    	}, { loop: 50, easing: "easeInOutSine", duration: Math.random() * 1000, delay: Math.random() * 750 });
+		    });
+
+		    $logo.velocity({ opacity: 0.85 }, 2000);
+		}
+
+	    /************
+		    Init
+		************/
+
+		if (!/Chrome/i.test(navigator.userAgent) || ("ontouchstart" in window)) {
+			alert("Although Velocity.js works on all browsers, the playground is for desktop Chrome only. Redirecting you to Velocity's documentation.");
+			window.location = "index.html";
+		} else {
+			var audio = $audio[0],
+				audioURL = "http://julian.com/research/velocity/playground.mp3",
+				startClicked = $.Deferred();
+
+			$start
+				.delay(2000)
+				.queue(function() {
+					$start
+						.val("Let's play...")
+						.dequeue();
+				});
+
+			$start.on("click", function() {
+				startClicked.resolve();
+
+				$start.velocity({ opacity: 0 }, { display: "none", easing: "easeInQuad", duration: 80, queue: false });
+			});
+
+			$.when($.ajax({
+		        url: audioURL,
+		        success: function() {
+		            $audio.attr("src", audioURL);
+		        }
+		    }), startClicked).then(function() {
+		        audio.load();
+		    	audio.play();
+
+		        setTimeout(buzzing, 250);
+		        setTimeout(fakeBar, 2200);
+		        setTimeout(cubes, 4000);
+		    });
+	    }
+		</script>
+	</body>
+</html>
