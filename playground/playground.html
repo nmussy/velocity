@@ -665,19 +665,19 @@
 				$start.velocity({ opacity: 0 }, { display: "none", easing: "easeInQuad", duration: 80, queue: false });
 			});
 
-			/*$.when($.ajax({
+			$.when($.ajax({
 		        url: audioURL,
 		        success: function() {
 		            $audio.attr("src", audioURL);
 		        }
 		    }), startClicked).then(function() {
 		        audio.load();
-		    	audio.play();*/
+		    	audio.play();
 
 		        setTimeout(buzzing, 250);
 		        setTimeout(fakeBar, 2200);
-		        setTimeout(cubes, 4000);/*
-		    });*/
+		        setTimeout(cubes, 4000);
+		    });
 	    }
 		</script>
 	</body>
