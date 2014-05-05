@@ -421,10 +421,45 @@
 	    </div>
 		<a id="logo" href="index.html">Velocity<span id="logoDot">.</span>js</a>
 	    <audio id="audio" preload="none"></audio>
+		<script src="C:\Users\Jimmy\Documents\GitHub\velocity-less\velocity.js" id="library"></script>
 		<script src="http://julian.com/research/js/libs/jquery-1.11.0.js"></script>
 		<script src="http://julian.com/research/blast/jquery.blast.js" id="library"></script>
-		<script src="velocity.js" id="library"></script>
 		<script>
+
+		velocity.Utilities.fn.queue = function( type, data ) {
+			console.log(this);
+            var setter = 2;
+
+            if ( typeof type !== "string" ) {
+                data = type;
+                type = "fx";
+                setter--;
+            }
+
+            if ( arguments.length < setter ) {
+                return velocity.Utilities.queue( this[0], type );
+            }
+
+            return data === undefined ?
+                this :
+                $.each(this, function() {
+                    var queue = velocity.Utilities.queue( this, type, data );
+
+                    // ensure a hooks for this queue
+                    velocity.Utilities._queueHooks( this, type );
+
+                    if ( type === "fx" && queue[0] !== "inprogress" ) {
+                        velocity.Utilities.dequeue( this, type );
+                    }
+                });
+        };
+
+		velocity.Utilities.fn.dequeue = function( type ) {
+            return $.each(this, function() {
+                velocity.Utilities.dequeue( this, type );
+            });
+        };
+
 	    /****************
 		    Elements
 		****************/
@@ -450,6 +485,11 @@
 	    var $logo = $("#logo"),
 	    	$welcome = $("#welcome"),
 	    	$welcomeBlasted = $welcome.blast({ delimiter: "letter" });
+
+	    if(!window.jQuery.velocity) {
+		    window.jQuery.velocity = velocity;
+		    window.jQuery.fn.velocity = velocity.animate;
+	    }
 
 	    /***************
     	    Effects
@@ -567,11 +607,12 @@
 					rotateY: 2,
 					rotateZ: 90,
 					opacity: 0
-				}, { duration: 375, easing: "easeOutSine", display: "none" })
-				.queue(function() {
+				}, { duration: 375, easing: "easeOutSine", display: "none" });
+			velocity.Utilities.fn.init($largeCube[0]).queue(function() {
+					console.log('timeout');
 					setTimeout(welcome, 1000);
 				})
-				.dequeue();
+			velocity.Utilities.fn.init($largeCube[0]).dequeue();
 	    }
 
         /***************
@@ -626,19 +667,19 @@
 				$start.velocity({ opacity: 0 }, { display: "none", easing: "easeInQuad", duration: 80, queue: false });
 			});
 
-			$.when($.ajax({
+			/*$.when($.ajax({
 		        url: audioURL,
 		        success: function() {
 		            $audio.attr("src", audioURL);
 		        }
 		    }), startClicked).then(function() {
 		        audio.load();
-		    	audio.play();
+		    	audio.play();*/
 
 		        setTimeout(buzzing, 250);
 		        setTimeout(fakeBar, 2200);
-		        setTimeout(cubes, 4000);
-		    });
+		        setTimeout(cubes, 4000);/*
+		    });*/
 	    }
 		</script>
 	</body>
