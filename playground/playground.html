@@ -421,13 +421,12 @@
 	    </div>
 		<a id="logo" href="index.html">Velocity<span id="logoDot">.</span>js</a>
 	    <audio id="audio" preload="none"></audio>
-		<script src="C:\Users\Jimmy\Documents\GitHub\velocity-less\velocity.js" id="library"></script>
+		<script src="./velocity.js" id="library"></script>
 		<script src="http://julian.com/research/js/libs/jquery-1.11.0.js"></script>
 		<script src="http://julian.com/research/blast/jquery.blast.js" id="library"></script>
 		<script>
 
 		velocity.Utilities.fn.queue = function( type, data ) {
-			console.log(this);
             var setter = 2;
 
             if ( typeof type !== "string" ) {
@@ -609,7 +608,6 @@
 					opacity: 0
 				}, { duration: 375, easing: "easeOutSine", display: "none" });
 			velocity.Utilities.fn.init($largeCube[0]).queue(function() {
-					console.log('timeout');
 					setTimeout(welcome, 1000);
 				})
 			velocity.Utilities.fn.init($largeCube[0]).dequeue();
