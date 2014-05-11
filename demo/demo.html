@@ -215,7 +215,7 @@
 
 	/* Ensure the user is full-screened; this demo's translations are relative to screen width, not window width. */
 	if ((document.documentElement.clientWidth / screenWidth) < 0.80) {
-		domBrowserWidthNotice.show();
+		domBrowserWidthNotice.style.display = 'static';
 	}
 
 	/*****************
